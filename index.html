@@ -14,8 +14,18 @@
 
 
 <div class="container-fluid mt-3" id="app">
+
     <input type="text" class="form-control" v-model="criterioDeBusqueda"
-        placeholder="Ingresar un criterio de busqueda...">
+        placeholder="Ingresar un criterio de busqueda basado en nombre/apellido ...">
+    <br>
+    <p v-if="getCantFiltroNombre" class="alert alert-warning">
+       El minimo para realizar la busqueda es de 3 caracteres.
+    </p>
+    <input type="text" class="form-control" v-model="criterioDeBusquedaDni"
+        placeholder="Ingresar un criterio de busqueda basado en DNI">
+        <p v-if="getCantFiltroDni" class="alert alert-warning">
+            El minimo para realizar la busqueda es de 3 caracteres númericos.
+        </p>
     <br>
     <div class="card-deck m-0">
         <div class="row">
@@ -40,6 +50,7 @@
         el: '#app',
         data: {
             criterioDeBusqueda: '',
+            criterioDeBusquedaDni: '',
             //Aquí, en este array es donde tienen que agregar su información
             personas: [
                 {
@@ -49,10 +60,50 @@
                     dni: "20442873"
                 },
                 {
-                    nombre: "...",
-                    apellido: "...",
-                    correo: "...",
-                    dni: "..."
+                    nombre: "Bart",
+                    apellido: "Simpson",
+                    correo: "Bsimps@gmail.com",
+                    dni: "40684564"
+                },
+                {
+                    nombre: "Barney",
+                    apellido: "Gomez",
+                    correo: "Bgomez@gmail.com",
+                    dni: "28456214"
+                },
+                ,
+                {
+                    nombre: "Marge",
+                    apellido: "Simpson",
+                    correo: "Msimpson@gmail.com",
+                    dni: "22448844"
+                },
+                ,
+                {
+                    nombre: "Ned",
+                    apellido: "Flanders",
+                    correo: "NFland@gmail.com",
+                    dni: "22667841"
+                },
+                ,
+                {
+                    nombre: "Milhouse",
+                    apellido: "Van Houten",
+                    correo: "Mil@gmail.com",
+                    dni: "40145315"
+                },
+                ,
+                {
+                    nombre: "Selma",
+                    apellido: "Bouvier",
+                    correo: "SelBouv@gmail.com",
+                    dni: "254841225"
+                },
+                {
+                    nombre: "Patty",
+                    apellido: "Bouvier",
+                    correo: "Paty@gmail.com",
+                    dni: "254841226"
                 },
             ]
 
@@ -60,9 +111,29 @@
         computed: {
             personasFiltradas() {
                 return this.personas.filter((persona) => {
-                    let registroCompleto = `${persona.nombre} ${persona.apellido} ${persona.dni} ${persona.correo}`
-                    return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase())
+                    let registroNombre = `${persona.nombre} ${persona.apellido}`
+                    let registroDNI = `${persona.dni}`
+
+                    let flagNombre=true
+                    let flagDni=true
+
+                    if (/^[a-zA-Z]+$/.test(this.criterioDeBusqueda) && this.criterioDeBusqueda.length>=3) {
+                    
+                        flagNombre = registroNombre.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase())
+                    }
+
+                    if (!isNaN(this.criterioDeBusquedaDni)&& this.criterioDeBusquedaDni.length>=3) {
+                        flagDni = registroDNI.toLowerCase().includes(this.criterioDeBusquedaDni.toLowerCase())
+                    }
+
+                    return flagNombre && flagDni
                 });
+            },
+            getCantFiltroNombre(){
+                return this.criterioDeBusqueda.length>0 && this.criterioDeBusqueda.length<3
+            },
+            getCantFiltroDni(){
+                return this.criterioDeBusquedaDni.length>0 && this.criterioDeBusquedaDni.length<3
             }
         },
         methods: {
